@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7fx-FV-Sv1">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="fBk-AO-YxD">
+            <objects>
+                <viewController id="7fx-FV-Sv1" customClass="ViewController" customModule="ARDecorating" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wca-h0-daW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arView multipleTouchEnabled="YES" contentMode="scaleToFill" enableRayTracedShadows="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5gr-2O-Gju">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                            </arView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="uyl-lt-PuY">
+                                <rect key="frame" x="120.5" y="824" width="173" height="28"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LLs-F2-ckn">
+                                        <rect key="frame" x="0.0" y="0.0" width="79" height="28"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                        <state key="normal" title="Add Table">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="loadTable" destination="7fx-FV-Sv1" eventType="touchUpInside" id="9Fv-4W-vFD"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1f-lX-73Y">
+                                        <rect key="frame" x="94" y="0.0" width="79" height="28"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                        <state key="normal" title="Add Item">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="loadItem" destination="7fx-FV-Sv1" eventType="touchUpInside" id="f8d-oZ-919"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="5gr-2O-Gju" firstAttribute="leading" secondItem="sOi-zD-5oD" secondAttribute="leading" id="OWF-t3-0Jw"/>
+                            <constraint firstItem="sOi-zD-5oD" firstAttribute="bottom" secondItem="uyl-lt-PuY" secondAttribute="bottom" constant="10" id="Tzq-5O-1UG"/>
+                            <constraint firstItem="5gr-2O-Gju" firstAttribute="top" secondItem="sOi-zD-5oD" secondAttribute="top" id="fRQ-oM-MEg"/>
+                            <constraint firstItem="sOi-zD-5oD" firstAttribute="bottom" secondItem="5gr-2O-Gju" secondAttribute="bottom" id="fyL-Jl-AVP"/>
+                            <constraint firstItem="sOi-zD-5oD" firstAttribute="trailing" secondItem="5gr-2O-Gju" secondAttribute="trailing" id="gGk-Oh-RQv"/>
+                            <constraint firstItem="uyl-lt-PuY" firstAttribute="centerX" secondItem="wca-h0-daW" secondAttribute="centerX" id="y5n-mA-WCu"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="sOi-zD-5oD"/>
+                    </view>
+                    <connections>
+                        <outlet property="vArScene" destination="5gr-2O-Gju" id="0O2-jK-Ufh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FK9-Dd-m9V" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="132" y="139"/>
+        </scene>
+    </scenes>
+</document>
