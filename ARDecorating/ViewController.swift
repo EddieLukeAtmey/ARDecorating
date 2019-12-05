@@ -9,6 +9,7 @@
 import UIKit
 import ARKit
 import RealityKit
+import FocusEntity
 
 final class ViewController: UIViewController {
 
@@ -16,30 +17,26 @@ final class ViewController: UIViewController {
 
     /// A view that instructs the user's movement during session initialization.
     let coachingOverlay = ARCoachingOverlayView()
-    let horizontalAnchor = AnchorEntity(plane: .horizontal, minimumBounds: [0.15, 0.15])
-//    let focusSquare = FocusSquare()
+//    let horizontalAnchor = AnchorEntity(plane: .horizontal, minimumBounds: [0.15, 0.15])
+    let focusSquare = FESquare()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        vArScene.debugOptions = [.showAnchorOrigins, .showAnchorGeometry, .showPhysics, .showWorldOrigin, .showFeaturePoints, .showStatistics]
-        vArScene.session.delegate = self
+//        vArScene.debugOptions = [.showAnchorOrigins, .showAnchorGeometry, .showPhysics, .showWorldOrigin, .showFeaturePoints, .showStatistics]
         setupCoachingOverlay()
 
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
         config.isLightEstimationEnabled = true
         vArScene.session.run(config)
-
-        vArScene.scene.addAnchor(horizontalAnchor)
-//        vArScene.scene.anchors.first?.addChild(focusSquare)
     }
 
     @IBAction private func loadTable() {
 
-        if let entity = horizontalAnchor.findEntity(named: "table") {
-            horizontalAnchor.removeChild(entity)
-            return
-        }
+//        if let entity = horizontalAnchor.findEntity(named: "table") {
+//            horizontalAnchor.removeChild(entity)
+//            return
+//        }
 
         do {
             let table = try VirtualObject.loadModel(named: "VirtualObjects.scnassets/Table/table.obj")
@@ -48,12 +45,13 @@ final class ViewController: UIViewController {
             material.baseColor = try .texture(.load(named: "VirtualObjects.scnassets/Table/textures/WoodSeemles.jpg"))
             table.model?.materials = [material]
 
-            horizontalAnchor.addChild(table)
+//            horizontalAnchor.addChild(table)
             table.scale = [1, 1, 1] * 0.002
             table.generateCollisionShapes(recursive: true)
 
-            // enable dragging
-            vArScene.installGestures([.translation, .rotation], for: table)
+            addObject(table)
+//            let anchor = AnchorEntity(plane: .horizontal, minimumBounds: [0.15, 0.15])
+            //            vArScene.scene.addAnchor(anchor)
 
         }
         catch { print(error) }
@@ -63,17 +61,25 @@ final class ViewController: UIViewController {
 
 //        guard let item = try? ModelEntity.loadModel(named: "VirtualObjects.scnassets/Glass/Glass.obj") else { return }
         guard let item = try? ARDecoratingContent.loadBread() else { return }
-//        var material = SimpleMaterial()
-//        material.baseColor = try .texture(.load(named: "VirtualObjects.scnassets/Table/textures/WoodSeemles.jpg"))
-//        item.model?.materials = [material]
-
-        horizontalAnchor.addChild(item)
-        horizontalAnchor.children.append(item)
-//        item.scale = [1, 1, 1] * 0.002
         item.generateCollisionShapes(recursive: true)
 
+        addObject(item)
+    }
+
+    func addObject(_ obj: Entity & HasCollision) {
+        // 1. Get ray cast query for object's alignment
+        // 2. Cast ray for query to get desired position
+        guard let query = vArScene.getRaycastQuery(for: .horizontal), let result = vArScene.castRay(for: query).first else { return }
+
+        // 3. add anchor entity and transfor to desire position
+        let anchor = AnchorEntity(raycastResult: result)
+        vArScene.scene.addAnchor(anchor)
+
+        // 4. Add entity to anchor entity
+        anchor.addChild(obj)
+
         // enable dragging
-        vArScene.installGestures([.translation, .rotation], for: item)
+        vArScene.installGestures([.translation, .rotation], for: obj)
     }
 }
 
@@ -82,6 +88,8 @@ extension ARDecoratingContent.Bread: HasCollision {}
 extension ViewController: ARCoachingOverlayViewDelegate {
 
     func setupCoachingOverlay() {
+        coachingOverlay.delegate = self
+        coachingOverlay.session = vArScene.session
         coachingOverlay.goal = .horizontalPlane
         coachingOverlay.activatesAutomatically = true
 
@@ -94,7 +102,6 @@ extension ViewController: ARCoachingOverlayViewDelegate {
             coachingOverlay.widthAnchor.constraint(equalTo: view.widthAnchor),
             coachingOverlay.heightAnchor.constraint(equalTo: view.heightAnchor)
             ])
-        print("\(#function)")
     }
 
     func coachingOverlayViewWillActivate(_ coachingOverlayView: ARCoachingOverlayView) {
@@ -102,13 +109,18 @@ extension ViewController: ARCoachingOverlayViewDelegate {
     }
 
     func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        coachingOverlayView.removeFromSuperview()
-        print("\(#function)")
+        coachingOverlayView.activatesAutomatically = false
+        vArScene.session.delegate = self
+        focusSquare.viewDelegate = vArScene
     }
 }
 
 /// Used to find a horizontal plane anchor before placing the game into the world.
 extension ViewController: ARSessionDelegate {
+
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        focusSquare.updateFocusNode()
+    }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
         print("\(#function), \(anchors)")
